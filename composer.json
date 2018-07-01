@@ -5,13 +5,6 @@
     "require": {
         "kairos-project/api-controller": "^1@dev"
     },
-    "require-dev": {
-        "doctrine/common": "~2.4"
-    },
-	"suggest" : {
-		"doctrine/orm" : "To use sql databases",
-		"doctrine/mongodb-odm" : "To use mongodb databases"
-	},
     "license": "MIT",
     "authors": [
         {
