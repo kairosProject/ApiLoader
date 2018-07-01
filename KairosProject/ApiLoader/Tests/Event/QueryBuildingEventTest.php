@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace KairosProject\ApiLoader\Tests;
+namespace KairosProject\ApiLoader\Tests\Event;
 
 use KairosProject\Tests\AbstractTestClass;
 use KairosProject\ApiLoader\Event\QueryBuildingEvent;
