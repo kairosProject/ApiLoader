@@ -157,6 +157,14 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
         string $eventName,
         EventDispatcherInterface $dispatcher
     ) : void {
+        $this->logger->debug(
+            'Item loading started',
+            [
+                'from event' => $eventName,
+                'dispatched event' => $this->itemEventName,
+                'storage key' => $this->eventKeyStorage
+            ]
+        );
         $this->load($processEvent, $eventName, $dispatcher, self::CONFIGURE_FOR_ITEM, $this->itemEventName);
     }
 
@@ -177,6 +185,14 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
         string $eventName,
         EventDispatcherInterface $dispatcher
     ) : void {
+        $this->logger->debug(
+            'Collection loading started',
+            [
+                'from event' => $eventName,
+                'dispatched event' => $this->itemEventName,
+                'storage key' => $this->eventKeyStorage
+            ]
+        );
         $this->load($processEvent, $eventName, $dispatcher, self::CONFIGURE_FOR_COLLETION, $this->collectionEventName);
     }
 
