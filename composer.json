@@ -5,6 +5,15 @@
     "require": {
         "kairos-project/api-controller": "^1@dev"
     },
+	"require-dev" : {
+		"infection/infection" : "^0.8.2",
+		"phpmd/phpmd" : "^2.6",
+		"phpmetrics/phpmetrics" : "^2.3",
+		"phpunit/phpunit" : "^7.2",
+		"sebastian/phpcpd" : "^4",
+		"squizlabs/php_codesniffer" : "^3.3",
+		"kairos-project/tests": "^1@dev"
+	},
     "license": "MIT",
     "authors": [
         {
@@ -12,5 +21,15 @@
             "email": "matthieu.vallance@cscfa.fr"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+	"autoload" : {
+		"psr-4" : {
+			"KairosProject\\ApiLoader\\" : "KairosProject/ApiLoader/"
+		}
+	},
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+	}
 }
