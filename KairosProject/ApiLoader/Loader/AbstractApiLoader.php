@@ -86,7 +86,7 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      *
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /**
      * Collection event name.
@@ -95,7 +95,7 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      *
      * @var string
      */
-    private $collectionEventName = self::COLLECTION_EVENT_NAME;
+    protected $collectionEventName = self::COLLECTION_EVENT_NAME;
 
     /**
      * Item event name.
@@ -104,7 +104,7 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      *
      * @var string
      */
-    private $itemEventName = self::ITEM_EVENT_NAME;
+    protected $itemEventName = self::ITEM_EVENT_NAME;
 
     /**
      * Event key storage.
@@ -114,7 +114,7 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      *
      * @var string
      */
-    private $eventKeyStorage = self::EVENT_KEY_STORAGE;
+    protected $eventKeyStorage = self::EVENT_KEY_STORAGE;
 
     /**
      * AbstractApiLoader constructor.
