@@ -59,7 +59,7 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      *
      * @var string
      */
-    public const EVENT_KEY_STORAGE = 'query_storage';
+    public const EVENT_KEY_STORAGE = 'data';
 
     /**
      * Configure for collection.
