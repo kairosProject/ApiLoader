@@ -80,6 +80,24 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
     private const CONFIGURE_FOR_ITEM = 'configureQueryForItem';
 
     /**
+     * Execute for collection
+     *
+     * This constant define the method name to execute a query in order to return a collection.
+     *
+     * @var string
+     */
+    private const EXECUTE_FOR_COLLECTION = 'executeCollectionQuery';
+
+    /**
+     * Execute for item
+     *
+     * This constant define the method name to execute a query in order to return an item.
+     *
+     * @var string
+     */
+    private const EXECUTE_FOR_ITEM = 'executeItemQuery';
+
+    /**
      * Logger.
      *
      * The application logger.
@@ -165,7 +183,14 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
                 'storage key' => $this->eventKeyStorage
             ]
         );
-        $this->load($processEvent, $eventName, $dispatcher, self::CONFIGURE_FOR_ITEM, $this->itemEventName);
+        $this->load(
+            $processEvent,
+            $eventName,
+            $dispatcher,
+            self::CONFIGURE_FOR_ITEM,
+            $this->itemEventName,
+            self::EXECUTE_FOR_ITEM
+        );
     }
 
     /**
@@ -193,7 +218,14 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
                 'storage key' => $this->eventKeyStorage
             ]
         );
-        $this->load($processEvent, $eventName, $dispatcher, self::CONFIGURE_FOR_COLLETION, $this->collectionEventName);
+        $this->load(
+            $processEvent,
+            $eventName,
+            $dispatcher,
+            self::CONFIGURE_FOR_COLLETION,
+            $this->collectionEventName,
+            self::EXECUTE_FOR_COLLECTION
+        );
     }
 
     /**
@@ -207,6 +239,8 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      * @param string                   $configurationType The configuration method to be used. Use
      *                                                    self::CONFIGURE_FOR_* constants.
      * @param string                   $dispatchEvent     The dispatching event name.
+     * @param string                   $executionType     The execution method to be used. Use
+     *                                                    self::EXECUTE_FOR_* constants.
      *
      * @return void
      */
@@ -215,7 +249,8 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
         string $eventName,
         EventDispatcherInterface $dispatcher,
         string $configurationType,
-        string $dispatchEvent
+        string $dispatchEvent,
+        string $executionType
     ) : void {
         $queryBuildingEvent = $this->getQueryBuildingEvent($processEvent);
         $this->instanciateQueryBuilder($queryBuildingEvent, $eventName, $dispatcher);
@@ -225,7 +260,7 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
 
         $processEvent->setParameter(
             $this->eventKeyStorage,
-            $this->executeQuery(
+            $this->{$executionType}(
                 $queryBuildingEvent,
                 $eventName,
                 $dispatcher
@@ -234,17 +269,34 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
     }
 
     /**
-     * Execute query.
+     * Execute collection query.
      *
-     * This method execute the query and return the result.
+     * This method execute the query and return the result as a collection.
      *
      * @param QueryBuildingEventInterface $event      The query building event
      * @param string                      $eventName  The current event name
      * @param EventDispatcherInterface    $dispatcher The current event dispatcher
      *
-     * @return void
+     * @return mixed
      */
-    abstract protected function executeQuery(
+    abstract protected function executeCollectionQuery(
+        QueryBuildingEventInterface $event,
+        string $eventName,
+        EventDispatcherInterface $dispatcher
+    );
+
+    /**
+     * Execute item query.
+     *
+     * This method execute the query and return the result as a specific item.
+     *
+     * @param QueryBuildingEventInterface $event      The query building event
+     * @param string                      $eventName  The current event name
+     * @param EventDispatcherInterface    $dispatcher The current event dispatcher
+     *
+     * @return mixed
+     */
+    abstract protected function executeItemQuery(
         QueryBuildingEventInterface $event,
         string $eventName,
         EventDispatcherInterface $dispatcher

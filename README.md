@@ -12,7 +12,7 @@ At a first level, the component will have to process two well-known operations:
  * load a specific item
  * load a set of items
 
-To rely upon ApiController library, the ApiLoader will define it as a dependency. Then it became possible to integrate the event dispatching logic. This logic will allow the developers to attach some query building extension. These extensions will work with a query building event instead of the top ApiController level ProcessEvent.
+To rely upon the ApiController library, the ApiLoader will define it as a dependency. Then it became possible to integrate the event dispatching logic. This logic will allow the developers to attach some query building extension. These extensions will work with a query building event instead of the top ApiController level ProcessEvent.
 
 As the original event contains references to request, possibly needed by extensions, the new one will offer access to it.
 
@@ -32,6 +32,7 @@ A the time of writing, the API controller is designed to have three production d
 
  * psr/log
  * symfony/event-dispatcher
+ * kairos-project/api-controller
 
 ### 3.1) psr/log
 
@@ -74,7 +75,7 @@ Get a queryBuilding event from the getQueryBuildingEvent by offer the initial ev
 Provide the event to instanciateQueryBuilder, and inject a new queryBuilder.
 Provide the event to configureQueryForCollection. This step configures the queryBuilder.
 Dispatch a query building event name. This action allows the modification of the query by some attached extensions.
-Execute the query and insert the result into the original event, at a defined key.
+Execute the query for collection and insert the result into the original event, at a defined key.
 ```
 
 #### 4.3) loadItem method algorithm
@@ -90,7 +91,7 @@ Get a queryBuilding event from the getQueryBuildingEvent by offer the initial ev
 Provide the event to instanciateQueryBuilder, and inject a new queryBuilder.
 Provide the event to configureQueryForItem. This step configures the queryBuilder.
 Dispatch a query building event name. This action allows the modification of the query by some attached extensions.
-Execute the query and insert the result into the original event, at a defined key.
+Execute the query for an item and insert the result into the original event, at a defined key.
 ```
 
 #### 4.4) Event specification

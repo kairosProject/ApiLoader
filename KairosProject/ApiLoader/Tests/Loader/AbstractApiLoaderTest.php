@@ -98,7 +98,8 @@ class AbstractApiLoaderTest extends AbstractTestClass
             $dispatcher,
             $queryResult,
             $eventName,
-            'configureQueryForCollection'
+            'configureQueryForCollection',
+            'executeCollectionQuery'
         );
 
         $this->getInvocationBuilder($dispatcher, $this->once(), 'dispatch')
@@ -154,7 +155,8 @@ class AbstractApiLoaderTest extends AbstractTestClass
             $dispatcher,
             $queryResult,
             $eventName,
-            'configureQueryForItem'
+            'configureQueryForItem',
+            'executeItemQuery'
         );
 
         $this->getInvocationBuilder($dispatcher, $this->once(), 'dispatch')
@@ -184,6 +186,7 @@ class AbstractApiLoaderTest extends AbstractTestClass
      * @param MockObject $queryResult         The mocked query result.
      * @param string     $eventName           The dispatched event name.
      * @param string     $configurationMethod The used configuration method.
+     * @param string     $executionMethod     The used execution method.
      *
      * @return void
      */
@@ -194,7 +197,8 @@ class AbstractApiLoaderTest extends AbstractTestClass
         MockObject $dispatcher,
         MockObject $queryResult,
         string $eventName,
-        string $configurationMethod
+        string $configurationMethod,
+        string $executionMethod
     ) : void {
         $this->getInvocationBuilder($instance, $this->once(), 'getQueryBuildingEvent')
             ->with(
@@ -215,7 +219,7 @@ class AbstractApiLoaderTest extends AbstractTestClass
                 $this->equalTo($eventName),
                 $this->identicalTo($dispatcher)
             );
-        $this->getInvocationBuilder($instance, $this->once(), 'executeQuery')
+        $this->getInvocationBuilder($instance, $this->once(), $executionMethod)
             ->with(
                 $this->identicalTo($queryEvent),
                 $this->equalTo($eventName),
