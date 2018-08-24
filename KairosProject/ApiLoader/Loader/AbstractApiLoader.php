@@ -95,7 +95,16 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      *
      * @var string
      */
-    private const EXECUTE_FOR_ITEM = 'executeItemQuery';
+    private const EXECUTE_FOR_ITEM = 'loadItemOrThrowException';
+
+    /**
+     * No item exception
+     *
+     * Define if an excpetion have to be throwned if the load item function cannot load an item  or return null.
+     *
+     * @var boolean
+     */
+    private const NO_ITEM_EXCEPTION = true;
 
     /**
      * Logger.
@@ -135,6 +144,16 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
     protected $eventKeyStorage = self::EVENT_KEY_STORAGE;
 
     /**
+     * No item exception
+     *
+     * This property store the exception throwing state in case of unloaded item. This property have
+     * self::NO_ITEM_EXCEPTION as default value.
+     *
+     * @var boolean
+     */
+    private $noItemException = self::NO_ITEM_EXCEPTION;
+
+    /**
      * AbstractApiLoader constructor.
      *
      * The default AbstractApiLoader constructor will store the logger and the configuration elements.
@@ -143,6 +162,7 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      * @param string          $collectionEventName The event name dispatched to configure the collection loading query.
      * @param string          $itemEventName       The event name dispatched to configure the item loading query.
      * @param string          $eventKeyStorage     The key name where the query result will be stored.
+     * @param boolean         $noItemException     The exception throwing state in case of unloaded item.
      *
      * @return void
      */
@@ -150,12 +170,14 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
         LoggerInterface $logger,
         string $collectionEventName = self::COLLECTION_EVENT_NAME,
         string $itemEventName = self::ITEM_EVENT_NAME,
-        string $eventKeyStorage = self::EVENT_KEY_STORAGE
+        string $eventKeyStorage = self::EVENT_KEY_STORAGE,
+        bool $noItemException = self::NO_ITEM_EXCEPTION
     ) {
         $this->logger = $logger;
         $this->collectionEventName = $collectionEventName;
         $this->itemEventName = $itemEventName;
         $this->eventKeyStorage = $eventKeyStorage;
+        $this->noItemException = $noItemException;
     }
 
     /**
@@ -266,6 +288,43 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
                 $dispatcher
             )
         );
+    }
+
+    /**
+     * Load item or throw exception
+     *
+     * Load an item by executing the executeQueryItem. In case of item cannot be resolved, this method will throw a
+     * RuntimeException. The exception throwing can be disabled by the $noItemException constructor argument.
+     *
+     * @param ProcessEventInterface    $event      The original event.
+     * @param string                   $eventName  The original event name.
+     * @param EventDispatcherInterface $dispatcher The event dispatcher.
+     *
+     * @throws                                      \RuntimeException If the item cannot be loaded
+     * @return                                      mixed
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    private function loadItemOrThrowException(
+        QueryBuildingEventInterface $event,
+        string $eventName,
+        EventDispatcherInterface $dispatcher
+    ) {
+        $queryResult = $this->executeItemQuery($event, $eventName, $dispatcher);
+
+        if (empty($queryResult) && $this->noItemException) {
+            $this->logger->notice(
+                'Item not found from loader',
+                [
+                    'loader class' => static::class,
+                    'from event' => $eventName,
+                    'dispatched event' => $this->itemEventName
+                ]
+            );
+
+            throw new \RuntimeException('Item not found from loader', 404);
+        }
+
+        return $queryResult;
     }
 
     /**

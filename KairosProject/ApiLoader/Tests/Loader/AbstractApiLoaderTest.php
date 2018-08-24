@@ -175,6 +175,85 @@ class AbstractApiLoaderTest extends AbstractTestClass
     }
 
     /**
+     * Test item error.
+     *
+     * This method validate the KairosProject\ApiLoader\Loader\AbstractApiLoader::loadItem method in case of empty
+     * result.
+     *
+     * @return void
+     */
+    public function testItemError()
+    {
+        $processEvent = $this->createMock(ProcessEventInterface::class);
+        $eventName = 'get_collection';
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+
+        $instance = $this->getEmptyItemLoader();
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(404);
+        $this->expectExceptionMessage('Item not found from loader');
+        $instance->loadItem($processEvent, $eventName, $dispatcher);
+    }
+
+    /**
+     * Test empty item.
+     *
+     * This method validate the KairosProject\ApiLoader\Loader\AbstractApiLoader::loadItem method in case of empty
+     * result.
+     *
+     * @return void
+     */
+    public function testEmptyItem()
+    {
+        $processEvent = $this->createMock(ProcessEventInterface::class);
+        $eventName = 'get_collection';
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+
+        $instance = $this->getEmptyItemLoader();
+
+        $exceptionProperty = $this->getClassProperty('noItemException', true);
+        $exceptionProperty->setValue($instance, false);
+
+        $instance->loadItem($processEvent, $eventName, $dispatcher);
+    }
+
+    /**
+     * Get empty item loader
+     *
+     * This method return an empty item loader to validate the loadItem logic in case of unloaded item.
+     *
+     * @return MockObject
+     */
+    private function getEmptyItemLoader()
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+        $queryEvent = $this->createMock(QueryBuildingEvent::class);
+
+        $instance = $this->getMockForAbstractClass(
+            $this->getTestedClass(),
+            [
+                $logger,
+                AbstractApiLoader::COLLECTION_EVENT_NAME,
+                AbstractApiLoader::ITEM_EVENT_NAME,
+                AbstractApiLoader::EVENT_KEY_STORAGE
+            ]
+        );
+        $this->getInvocationBuilder($instance, $this->once(), 'getQueryBuildingEvent')
+            ->with(
+                $this->anything()
+            )->willReturn(
+                $queryEvent
+            );
+        $this->getInvocationBuilder($instance, $this->once(), 'executeItemQuery')
+            ->willReturn(
+                null
+            );
+
+        return $instance;
+    }
+
+    /**
      * Configure instance.
      *
      * This method configure the mocked instance.

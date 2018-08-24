@@ -92,6 +92,7 @@ Provide the event to instanciateQueryBuilder, and inject a new queryBuilder.
 Provide the event to configureQueryForItem. This step configures the queryBuilder.
 Dispatch a query building event name. This action allows the modification of the query by some attached extensions.
 Execute the query for an item and insert the result into the original event, at a defined key.
+If the item is empty and the loader is configured to throw an exception in such case, it will throw a runtime exception with code 404.
 ```
 
 #### 4.4) Event specification
