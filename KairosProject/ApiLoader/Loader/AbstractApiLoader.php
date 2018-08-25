@@ -104,7 +104,7 @@ abstract class AbstractApiLoader implements ApiLoaderInterface
      *
      * @var boolean
      */
-    private const NO_ITEM_EXCEPTION = true;
+    protected const NO_ITEM_EXCEPTION = true;
 
     /**
      * Logger.
